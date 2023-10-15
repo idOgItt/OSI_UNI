@@ -30,7 +30,11 @@ int main (int argc, char * argv[]){
         return 1;
     }
 
-    while ((ch = fgetc(input_file)) != EOF){
+    __uint8_t byte;
+    size_t bites_read;
+
+
+    while ((bites_read = fread(&byte, 1, 1, input_file)) == 1) {
         printf("_flags: %d\n", input_file->_flags);
         printf("_IO_read_ptr: %p \n", input_file ->_IO_read_ptr);
         printf("_IO_read_end: %p \n", input_file->_IO_read_end);
@@ -45,7 +49,7 @@ int main (int argc, char * argv[]){
         printf("_IO_save_end: %p\n", input_file->_IO_save_end);
 
 
-        printf("Вывод ch: %d \n", ch);
+        printf("Считан байт: 0x%02X\n", byte);
     }
 
     fclose(input_file);
