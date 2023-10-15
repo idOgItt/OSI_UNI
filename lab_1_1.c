@@ -11,14 +11,26 @@ int main (int argc, char * argv[]){
     const char * file_path = argv[1];
     int ch;
 
-    FILE* input_file = fopen(file_path, "r");
+    __uint8_t bytes [] = {3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5};
+
+    FILE* input_file = fopen(file_path, "wb");
+    if (input_file == NULL) {
+        perror("Не удалось открыть файл для записи\n");
+        return 1;
+    }
+
+    fwrite(bytes, sizeof(__uint8_t), sizeof(bytes) / sizeof(__uint8_t), input_file);
+
+    fclose(input_file);
+
+    input_file = fopen(file_path, "rb");
 
     if (input_file == NULL) {
         perror("Не удалось открыть файл\n");
         return 1;
     }
 
-    while (ch = fgetc(input_file) != EOF){
+    while ((ch = fgetc(input_file)) != EOF){
         printf("_flags: %d\n", input_file->_flags);
         printf("_IO_read_ptr: %p \n", input_file ->_IO_read_ptr);
         printf("_IO_read_end: %p \n", input_file->_IO_read_end);
