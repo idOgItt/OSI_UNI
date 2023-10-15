@@ -10,11 +10,12 @@ int main(int argc, char* argv[]) {
     const char* input_file_path = argv[1];
     const char* output_file_path = argv[2];
 
-    FILE* input_file = fopen(input_file_path, "r");
-    FILE* output_file = fopen(output_file_path, "w");
+    FILE* input_file = fopen(input_file_path, "rb");
+    FILE* output_file = fopen(output_file_path, "wb");
 
     if (input_file == NULL) {
         perror("Ошибка при открытии входного файла");
+        fclose(output_file);
         return 1;
     }
 
@@ -24,10 +25,10 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-    int ch;
+    __uint8_t byte;
 
-    while ((ch = fgetc(input_file)) != EOF) {
-        fputc(ch, output_file);
+    while (fread(&byte, 1, 1, input_file) == 1) {
+        fwrite(&byte, 1, 1, output_file);
     }
 
     fclose(input_file);
