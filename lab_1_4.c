@@ -12,10 +12,17 @@ int main(int argc, char* argv[]) {
     const char* flag = argv[2];
 
     FILE* input_file = fopen(input_file_path, "rb");
+
+    if (input_file == NULL) {
+        perror("Не удалось открыть входной файл\n");
+        return 1;
+    }
+
     FILE* output_file = fopen("output.bin", "wb");
 
-    if (input_file == NULL || output_file == NULL) {
-        perror("Не удалось открыть файл\n");
+    if (output_file == NULL) {
+        perror("Не удалось открыть выходной файл\n");
+        fclose(input_file);
         return 1;
     }
 
@@ -34,27 +41,26 @@ int main(int argc, char* argv[]) {
     }
 
     __uint32_t group = 0;
-    int byte_read = 0;
-    int byte;
+    __uint8_t byte_read = 0;
+    __uint8_t byte;
     __uint32_t hex = 0x123AB4CD;
 
     __uint32_t value;
     size_t bytes_read;
+    int find = 0;
 
     switch (operation) {
         case 1:
-            while ((byte = fgetc(input_file)) != EOF) {
+            while ((fread(&byte, sizeof(__uint8_t), 1, input_file)) == 1) {
                 byte = byte ^ 0xFF;
-                fputc(byte, output_file);
+                fwrite(&byte, sizeof(__uint8_t), 1, output_file);
             }
             printf("Файл изменен\n");
             break;
 
         case 2:
-            while (1) {
-                int byte = fgetc(input_file);
-
-                if (byte == EOF) {
+            while ((fread(&byte, sizeof(__uint8_t), 1, input_file)) == 1) {
+                if (byte == 0) {
                     if (byte_read > 0) {
                         group = group ^ 0x00000000;
                         fwrite(&group, sizeof(__uint32_t), 1, output_file);
@@ -75,18 +81,17 @@ int main(int argc, char* argv[]) {
             break;
 
         case 3:
-            while (fread(&value, sizeof(value), 1, input_file) == 1) {
+            while (fread(&value, sizeof(__uint32_t), 1, input_file) == 1) {
                 if (value == hex) {
-                    printf("Найдено совпадение\n");
-                }
-                else {
-                    printf ("Не найдено\n");
+                    find++;
+                    printf("Найдено совпадение: 0x%08X\n", value);
                 }
             }
+            printf("Найдено %d совпадений\n", find);
             break;
 
         default:
-            printf("Invalid operation code\n");
+            printf("Недопустимый код операции\n");
             break;
     }
 
