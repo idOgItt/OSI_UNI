@@ -11,13 +11,13 @@ int main(int argc, char* argv[]) {
     const char* output_file_path = argv[2];
 
     FILE* input_file = fopen(input_file_path, "rb");
-    FILE* output_file = fopen(output_file_path, "wb");
 
     if (input_file == NULL) {
         perror("Ошибка при открытии входного файла");
-        fclose(output_file);
         return 1;
     }
+
+    FILE* output_file = fopen(output_file_path, "wb");
 
     if (output_file == NULL) {
         perror("Ошибка при открытии выходного файла");
