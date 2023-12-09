@@ -23,14 +23,17 @@ typedef enum {
 } ErrorCode;
 
 static const char* errorMessages[] = {
-    "Всё хорошо, можно идти пить чай ☕",
-    "Некорректный ввод, попробуйте ещё раз 🤨",
-    "Произошло переполнение, ой 🤯",
-    "Проблемы с выделением памяти, грустно 😐",
-    "Не удалось открыть файл, грустно 😥",
-    "Файл прочитан не полностью, грустно 😿",
-    "Неизвестная ошибка, что-то пошло не так 🫢",
-    "Не удалось запустить дочерний процесс",
+    "Everything went fine",
+    "Invalid input",
+    "Stack overflow",
+    "Sygmentation fault",
+    "File invalid",
+    "File reading error",
+    "Missing '('",
+    "Missing ')'",
+    "Invalid char",
+    "Devision zero",
+    "Something went wrong"
 };
 
 int searchSubstringInFiles(int filesCnt, const char* substring, ...);
@@ -105,7 +108,7 @@ int main(int argc, char *argv[])
         {
             if (searchSubstringInFiles(1, substr, buffer)) 
             {
-                printf("📄 %s\n", buffer);
+                printf(" %s\n", buffer);
                 return 8976; // found code = 4096
             }
             return 8977; // not found code = 4352
@@ -151,7 +154,7 @@ int searchSubstringInFiles(int filesCnt, const char* substring, ...) {
 
     for (int i = 0; i < filesCnt; ++i) {
         currentFileName = va_arg(args, const char*);
-        //printf("\n📄 %s:\n", currentFileName);
+        //printf("\n %s:\n", currentFileName);
 
         FILE* file = fopen(currentFileName, "r");
         if (file == NULL) {
